@@ -20,16 +20,24 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
     // Function to shuffle array
-    // Function to cycle through image sources in order
-    function cycleImages() {
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // Function to shuffle image sources
+    function shuffleImages() {
         const currentImages = Array.from(wrappers).map(wrapper => 
             wrapper.querySelector('img').src
         );
+        const shuffledIndices = shuffleArray([...Array(wrappers.length).keys()]);
         
-        // Apply cycled sources
+        // Apply shuffled sources
         wrappers.forEach((wrapper, i) => {
-            const nextIndex = (i + 1) % wrappers.length;
-            wrapper.querySelector('img').src = currentImages[nextIndex];
+            wrapper.querySelector('img').src = currentImages[shuffledIndices[i]];
         });
     }
 
@@ -112,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const currentTime = Date.now();
         if (currentTime - lastMouseMove > 50) {
-            cycleImages();
+            shuffleImages();
             lastMouseMove = currentTime;
         }
 
