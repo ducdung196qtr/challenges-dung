@@ -20,10 +20,15 @@ nav {
     display: flex;
     justify-content: space-between;
     z-index: 100;
+    align-items: center;
 }
 
 .logo {
     font-size: 1.5rem;
+}
+.logo img {
+    width: 60px;
+    height: 60px;
 }
 
 .menu {
