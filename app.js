@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isHovering = false;
     let lastMouseMove = 0;
     let mouseStopTimeout;
+    let currentTimelines = [];
 
     // Initialize GSAP
     gsap.set(wrappers, {
@@ -44,6 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function triggerFallingEffect() {
         isHovering = false;
         
+        // Clear any existing timelines
+        currentTimelines.forEach(tl => tl.kill());
+        currentTimelines = [];
+        
         // Get wrappers in reverse order (5,4,3,2,1)
         const reversedWrappers = [...wrappers].reverse();
         
@@ -53,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Create timeline for coordinated animation
             const tl = gsap.timeline();
+            currentTimelines.push(tl);
             
             // First fade to 50% opacity
             tl.to(wrapper, {
@@ -98,6 +104,10 @@ document.addEventListener('DOMContentLoaded', () => {
             clearTimeout(mouseStopTimeout);
         }
 
+        // Kill any running falling animations
+        currentTimelines.forEach(tl => tl.kill());
+        currentTimelines = [];
+
         // Reset wrapper states
         wrappers.forEach(wrapper => {
             wrapper.classList.add('active');
@@ -124,8 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Set timeout for mouse stop - reduced to 100ms
-        mouseStopTimeout = setTimeout(triggerFallingEffect, 50);
+        // Set timeout for mouse stop
+        mouseStopTimeout = setTimeout(triggerFallingEffect, 100);
     });
 
     // Animation loop
@@ -160,7 +170,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle mouse leave
     document.addEventListener('mouseleave', () => {
-       
         if (mouseStopTimeout) {
             clearTimeout(mouseStopTimeout);
         }
