@@ -44,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to trigger falling effect
     function triggerFallingEffect() {
         isHovering = false;
-        
         // Clear any existing timelines
         currentTimelines.forEach(tl => tl.kill());
         currentTimelines = [];
@@ -54,34 +53,28 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Animate each wrapper with a delay
         reversedWrappers.forEach((wrapper, index) => {
-            const startY = wrapper.getBoundingClientRect().top;
-            
             // Create timeline for coordinated animation
             const tl = gsap.timeline();
             currentTimelines.push(tl);
             
-            // First fade to 50% opacity
+            // First pause briefly at current position
             tl.to(wrapper, {
-                opacity: 0.5,
                 duration: 0.3,
-                delay: index * 0.05
+                opacity: 0.5,
+                delay: index * 0.08
             })
-            // Then fall and fade out completely
-            .fromTo(wrapper, 
-                { y: startY },
-                {
-                    y: window.innerHeight + 100,
-                    opacity: 0,
-                    duration: 0.8,
-                    ease: "power2.in",
-                    onComplete: () => {
-                        wrapper.classList.remove('active');
-                    }
+            // Then start falling
+            .to(wrapper, {
+                y: window.innerHeight + 100,
+                opacity: 0,
+                duration: 1.2,
+                ease: "power1.in",
+                onComplete: () => {
+                    wrapper.classList.remove('active');
                 }
-            );
+            });
         });
     }
-
     // Initialize all wrappers as active but at random positions
     wrappers.forEach((wrapper, i) => {
         wrapper.classList.add('active');
